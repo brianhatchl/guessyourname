@@ -5,11 +5,12 @@
     <script src="scripts/guess.js"></script>
 </head>
 <body>
+<h1>Let me try to guess your name...</h1>
 <div id="gender"><h1>What is your gender?</h1>
-<button class="gender">Male</button><button class="gender">Female</button>
+<button class="gender" id="male">Male</button><button class="gender" id="female">Female</button>
 </div>
 <div id="year">
-<h1>Select the year you were born</h1>
+<h1>What year you were born?</h1>
     <select class="year" id="birthyear" name="birthyear">
     <option value="2011">2011</option>
     <option value="2010">2010</option>
@@ -126,8 +127,8 @@
     </select>
 </div>
 <div id="letter">
-<h1>Select the first letter of your name</h1>
-    <select class="letter" id="letter" name="letter">
+<h1>What is the first letter of your name?</h1>
+    <select class="letter" id="letterSelect" name="letterSelect">
     <option value="A">A</option>
     <option value="B">B</option>
     <option value="C">C</option>
@@ -156,8 +157,14 @@
     <option value="Z">Z</option>
     </select>
 </div>
+<div id="answer">
+<h1 id="correct"></h1>
+<button id="startover">Start Over</button>
+</div>
 <div id="guess">
 <h1>Is your name <b id="name"></b>?</h1>
-<button>Yes</button><button>No</button></div>
+<button id="yes">Yes</button><button id="no">No</button>
+</div>
+<div id="graph"></div>
 </body>
 </html>
