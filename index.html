@@ -231,6 +231,9 @@
             $("#graph").hide();
             $("#gender").show();
             numGuess = 1;
+            $("#birthyear").val("");
+            $("#letterSelect").val("");
+            
         });
     });
     </script>
@@ -243,6 +246,7 @@
 <div id="year">
 <h1>What year you were born?</h1>
     <select class="year" id="birthyear" name="birthyear">
+    <option value=""></option>
     <option value="2011">2011</option>
     <option value="2010">2010</option>
     <option value="2009">2009</option>
@@ -360,6 +364,7 @@
 <div id="letter">
 <h1>What is the first letter of your name?</h1>
     <select class="letter" id="letterSelect" name="letterSelect">
+    <option value=""></option>
     <option value="A">A</option>
     <option value="B">B</option>
     <option value="C">C</option>
