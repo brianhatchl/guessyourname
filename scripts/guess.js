@@ -88,11 +88,81 @@ $(document).ready( function() {
         $("#correct").text("It took me " + numGuess + " guesses.")
         $("#guess").hide();
         
-        url = fusionurl + "sql=SELECT '" + gender + " name', 'rank' FROM " + table + " WHERE '" + gender + " name' = '" + $("#name").text() + "' ORDER BY year&key=" + apikey;
+        url = fusionurl + "sql=SELECT year, rank FROM " + table + " WHERE '" + gender + " name' = '" + $("#name").text() + "' ORDER BY year&key=" + apikey;
         
         $.get(url, function (data) {
             var namePopularity = $.parseJSON(data);
             //Show popularity graph
+            var plotdata = [];
+            for (var i=0; i<namePopularity["rows"].length; i++) {
+                plotdata[i] = [parseInt(namePopularity["rows"][i][0]), parseInt(namePopularity["rows"][i][1])];
+            }
+            chart = new Highcharts.Chart({
+                chart: {
+                    renderTo: 'graph',
+                    type: 'spline',
+                    width: 800,
+                    height: 500,
+                    style: {margin: '0 auto'}
+                },
+                title: {
+                    text: $("#name").text()
+                },
+                subtitle: {
+                    text: 'Baby Name Popularity over Time'
+                },
+                xAxis: {
+                    title: {
+                        text: 'Year'
+                    },
+                    labels: {
+                        formatter: function() {
+                            return this.value;
+                        }
+                    }
+                },
+                yAxis: {
+                    reversed: true,
+                    title: {
+                        text: 'Rank'
+                    },
+                    plotLines: [{
+                        value: 0,
+                        width: 1,
+                        color: '#808080'
+                    }],
+                    labels: {
+                        formatter: function() {
+                            return this.value;
+                        }
+                    },
+                    min: 1,
+                    max: 1000
+                },
+                tooltip: {
+                    formatter: function() {
+                            return '<b>Rank ' + this.y + '</b>' + 
+                            '<br><b>Year ' + this.x + '</b>';
+                    }
+                },
+                plotOptions: {
+                    spline: {
+                        lineWidth: 3,
+                        marker: {
+                            enabled: false,
+                        },
+                    }
+                },
+                legend: {
+                    enabled: false
+                },
+                series: [{
+                    name: 'Rank',
+                    data: plotdata
+                }]
+            });
+
+            
             $("#startover").show();
         });
     });
@@ -122,6 +192,7 @@ $(document).ready( function() {
 
     $("#startover").click( function() {
         $("#answer").hide();
+        $("#chart").hide();
         $("#gender").show();
         numGuess = 1;
     });
