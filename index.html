@@ -2,7 +2,7 @@
 <head>
     <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
     <script src="http://code.highcharts.com/highcharts.js"></script>
-    <script src="http://fgnass.github.com/spin.js/dist/spin.min.js""></script>
+    <script src="http://fgnass.github.com/spin.js/dist/spin.min.js"></script>
     <script>
     var apikey = "AIzaSyADIJfIELDuoquRbeHRBRim299rwt5sElI";
     var table = "1gHlGT7lHD-6p4-YndpiAhgdC2ySsYBZBnnE";
@@ -49,16 +49,16 @@
 
        
         url = fusionurl + "sql=SELECT 'Male name' FROM " + table + " WHERE rank = 1 AND year >= '1/1/1940' AND year <= '12/31/2011' GROUP BY 'Male name'&key=" + apikey;
-        $.get(url, function (data) {
-            maleNames = $.parseJSON(data);
+        $.getJSON(url, function (data) {
+            maleNames = data;
             $("#gender").show();
             $("#male").show();
             if ($("#female:visible")) $("#spinner").hide();
         });
         
         url = fusionurl + "sql=SELECT 'Female name' FROM " + table + " WHERE rank = 1 AND year >= '1/1/1940' AND year <= '12/31/2011' GROUP BY 'Female name'&key=" + apikey;
-        $.get(url, function (data) {
-            femaleNames = $.parseJSON(data);
+        $.getJSON(url, function (data) {
+            femaleNames = data;
             $("#gender").show();
             $("#female").show();
             if ($("#male:visible")) $("#spinner").hide();
@@ -91,8 +91,8 @@
             limit = 5;
             url = fusionurl + "sql=SELECT '" + gender + " name', 'rank' FROM " + table + " WHERE year >= '1/1/" + year + "' AND year <= '12/31/" + year + "' ORDER BY rank LIMIT " + limit + "&key=" + apikey;
             
-            $.get(url, function (data) {
-                names = $.parseJSON(data);
+            $.getJSON(url, function (data) {
+                names = data;
                 randomIndex = Math.floor(names["rows"].length * Math.random());
                 $("#name").text(names["rows"][randomIndex][0]);
                 $("#guess").show();
@@ -107,8 +107,8 @@
             limit = 25;
             url = fusionurl + "sql=SELECT '" + gender + " name', 'rank' FROM " + table + " WHERE year >= '1/1/" + year + "' AND year <= '12/31/" + year + "' AND '" + gender + " name' STARTS WITH '" + letter + "' ORDER BY rank LIMIT " + limit + "&key=" + apikey;
             
-            $.get(url, function (data) {
-                names = $.parseJSON(data);
+            $.getJSON(url, function (data) {
+                names = data;
                 //randomIndex = Math.floor(name["rows"].length * Math.random());
                 //$("#name").text(name["rows"][randomIndex][0]);
                 $("#name").text(names["rows"][0][0]);
@@ -126,8 +126,8 @@
             
             url = fusionurl + "sql=SELECT year, rank FROM " + table + " WHERE '" + gender + " name' = '" + $("#name").text() + "' ORDER BY year&key=" + apikey;
             
-            $.get(url, function (data) {
-                var namePopularity = $.parseJSON(data);
+            $.getJSON(url, function (data) {
+                var namePopularity = data;
                 //Show popularity graph
                 var plotdata = [];
                 for (var i=0; i<namePopularity["rows"].length; i++) {
