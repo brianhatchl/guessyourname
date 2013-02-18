@@ -25,6 +25,8 @@
         $("#female").hide();
         $("#answer").hide();
         $("#startover").hide();
+        $("#graph").hide();
+        $("#explanation").hide();
         
         var opts = {
                 lines: 12, // The number of lines to draw
@@ -119,9 +121,8 @@
 
         $("#yes").click( function() {
             $("#answer").show();
-            $("#correct").text("It took me " + numGuess + " guesses.")
+            $("#correct").text("It took me " + numGuess + " guesses.");
             $("#guess").hide();
-            $("#graph").show();
             
             url = fusionurl + "sql=SELECT year, rank FROM " + table + " WHERE '" + gender + " name' = '" + $("#name").text() + "' ORDER BY year&key=" + apikey;
             
@@ -132,6 +133,27 @@
                 for (var i=0; i<namePopularity["rows"].length; i++) {
                     plotdata[i] = [parseInt(namePopularity["rows"][i][0]), parseInt(namePopularity["rows"][i][1])];
                 }
+                var plotline;
+                if (year) {
+                    plotline = { 
+                       value: year,
+                       width: 6,
+                       color: 'rgba(255, 0, 0, 0.4)',
+                       label: {
+                           text: year,
+                           style: {
+                               color: '#606060'
+                           }
+                       }
+                   };
+                }
+                labels = [
+                          {html: "Can you find your birth year on the graph?",
+                           style: ""},
+                          {html: "When was your name the most popular?",
+                           style: ""}
+                          
+                ];
                 chart = new Highcharts.Chart({
                     chart: {
                         renderTo: 'graph',
@@ -146,6 +168,7 @@
                     subtitle: {
                         text: 'Baby Name Popularity over Time'
                     },
+                    //labels: {items: labels},
                     xAxis: {
                         title: {
                             text: 'Year'
@@ -154,12 +177,13 @@
                             formatter: function() {
                                 return this.value;
                             }
-                        }
+                        },
+                        plotLines: [plotline]
                     },
                     yAxis: {
                         reversed: true,
                         title: {
-                            text: 'Rank'
+                            text: 'Rank in Popularity'
                         },
                         plotLines: [{
                             value: 0,
@@ -198,6 +222,7 @@
                 });
 
                 $("#graph").show();
+                $("#explanation").show();
                 $("#startover").show();
             });
         });
@@ -228,14 +253,19 @@
         $("#startover").click( function() {
             $("#answer").hide();
             $("#graph").hide();
+            $("#explanation").hide();
             $("#gender").show();
             numGuess = 1;
+            year = null;
             $("#birthyear").val("");
             $("#letterSelect").val("");
             
         });
     });
     </script>
+	<style type="text/css">
+	   .explan {color:blue;}
+	</style>
 </head>
 <body>
 <h1>Let me try to guess your name...</h1>
@@ -401,6 +431,12 @@
 <button id="yes">Yes</button><button id="no">No</button>
 </div>
 <div id="spinner"></div>
+<div id="explanation"><p>This chart shows the popularity of your name over the years.<br>
+The rank reflects how many babies born that year were given your name.<br>
+The higher the line, the more popular your name.</p>
+<p>Can you find your birth year on the graph?<br><br>
+What year was your name the most popular?</p>
+</div>
 <div id="graph"></div>
 </body>
 </html>
