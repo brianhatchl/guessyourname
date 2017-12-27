@@ -4,19 +4,28 @@
     <script src="https://code.highcharts.com/highcharts.js"></script>
     <script>
     var apikey = "AIzaSyADIJfIELDuoquRbeHRBRim299rwt5sElI";
-    var table = "1gHlGT7lHD-6p4-YndpiAhgdC2ySsYBZBnnE";
-    var fusionurl = "https://www.googleapis.com/fusiontables/v1/query?";
-    var gender = 'Female';
-    var name = 'Bella';
+    var table = "10CJGfdXaJ1tkODPW8wnRLym41bjFdRPSro5i8-W8";
+    var fusionurl = "https://www.googleapis.com/fusiontables/v2/query?";
 
     $(document).ready( function() {
-        url = fusionurl + "sql=SELECT year, rank, 'Male name', 'Female name' FROM " + table + " WHERE '" + gender + " name' = '" + name + "' ORDER BY year&key=" + apikey + "&callback=?";
+        url = fusionurl + "sql=SELECT year, rank, name, sex, count FROM " + table + " WHERE " + 
+        //"name IN ('Bella', 'Edward', 'Jacob')" +
+        "name = 'Bella' AND sex = 'F'" +
+        // "name = 'Edward' AND sex = 'M'" +
+        // "name = 'Jacob' AND sex = 'M'" +
+        // "name = 'Carly' AND sex = 'F'" +
+        // " AND year >=1990" +
+        " ORDER BY year&key=" + apikey + "&callback=?";
         $.getJSON(url, function (data) {
             var namePopularity = data;
+            var max = 0;
             //Show popularity graph
             var plotdata = [];
             for (var i=0; i<namePopularity["rows"].length; i++) {
-                plotdata[i] = [parseInt(namePopularity["rows"][i][0]), parseInt(namePopularity["rows"][i][1])];
+                var year = parseInt(namePopularity["rows"][i][0]);
+                var rank = parseInt(namePopularity["rows"][i][1]);
+                if (rank > max) max = rank;
+                plotdata[i] = [year, rank];
             }
             chart = new Highcharts.Chart({
                 chart: {
@@ -58,7 +67,7 @@
                         }
                     },
                     min: 1,
-                    max: 1000
+                    max: max
                 },
                 tooltip: {
                     formatter: function() {

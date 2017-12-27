@@ -5,8 +5,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/spin.js/2.3.2/spin.min.js"></script>
     <script>
     var apikey = "AIzaSyADIJfIELDuoquRbeHRBRim299rwt5sElI";
-    var table = "1gHlGT7lHD-6p4-YndpiAhgdC2ySsYBZBnnE";
-    var fusionurl = "https://www.googleapis.com/fusiontables/v1/query?";
+    var table = "10CJGfdXaJ1tkODPW8wnRLym41bjFdRPSro5i8-W8";
+    var fusionurl = "https://www.googleapis.com/fusiontables/v2/query?";
     var gender;
     var url;
     var year;
@@ -49,7 +49,7 @@
         var spinner = new Spinner(opts).spin(document.getElementById('spinner'));
         //$("#spinner").show();
 
-        url = fusionurl + "sql=SELECT 'Male name' FROM " + table + " WHERE rank = 1 AND year >= '1/1/1940' AND year <= '12/31/2011' GROUP BY 'Male name'&key=" + apikey;
+        url = fusionurl + "sql=SELECT name FROM " + table + " WHERE rank = 1 AND year >= 1940 AND year <= 2017 AND sex = 'M' GROUP BY name&key=" + apikey;
         $.getJSON(url + "&callback=?", function (data) {
             maleNames = data;
             $("#gender").show();
@@ -57,7 +57,7 @@
             if ($("#female:visible")) $("#spinner").hide();
         });
 
-        url = fusionurl + "sql=SELECT 'Female name' FROM " + table + " WHERE rank = 1 AND year >= '1/1/1940' AND year <= '12/31/2011' GROUP BY 'Female name'&key=" + apikey;
+        url = fusionurl + "sql=SELECT name FROM " + table + " WHERE rank = 1 AND year >= 1940 AND year <= 2017 AND sex = 'F' GROUP BY name&key=" + apikey;
         $.getJSON(url + "&callback=?", function (data) {
             femaleNames = data;
             $("#gender").show();
@@ -67,11 +67,11 @@
             
         $(".gender").click( function() {
             $("#spinner").show();
-            gender = $(this).text();
+            gender = $(this).text().charAt(0);
 
             var randomIndex;
             switch (gender) {
-            case "Male":
+            case "M":
                 randomIndex = Math.floor(maleNames["rows"].length * Math.random());
                 $("#name").text(maleNames["rows"][randomIndex][0]);
                 break;
@@ -88,9 +88,9 @@
         $(".year").change( function() {
             $("#spinner").show();
             year = $(this).val();
-            if (year > 2008) year = 2008;
+            if (year > 2016) year = 2016;
             limit = 5;
-            url = fusionurl + "sql=SELECT '" + gender + " name', 'rank' FROM " + table + " WHERE year >= '1/1/" + year + "' AND year <= '12/31/" + year + "' ORDER BY rank LIMIT " + limit + "&key=" + apikey;
+            url = fusionurl + "sql=SELECT name, rank FROM " + table + " WHERE sex = '" + gender + "' AND year = " + year + " ORDER BY rank LIMIT " + limit + "&key=" + apikey;
             
             $.getJSON(url + "&callback=?", function (data) {
                 names = data;
@@ -106,7 +106,7 @@
             $("#spinner").show();
             letter = $(this).val();
             limit = 25;
-            url = fusionurl + "sql=SELECT '" + gender + " name', 'rank' FROM " + table + " WHERE year >= '1/1/" + year + "' AND year <= '12/31/" + year + "' AND '" + gender + " name' STARTS WITH '" + letter + "' ORDER BY rank LIMIT " + limit + "&key=" + apikey;
+            url = fusionurl + "sql=SELECT name, rank FROM " + table + " WHERE sex = '" + gender + "' AND year = " + year + " AND name STARTS WITH '" + letter + "' ORDER BY rank LIMIT " + limit + "&key=" + apikey;
             
             $.getJSON(url + "&callback=?", function (data) {
                 names = data;
@@ -124,7 +124,7 @@
             $("#correct").text("It took me " + numGuess + " guesses.");
             $("#guess").hide();
             
-            url = fusionurl + "sql=SELECT year, rank FROM " + table + " WHERE '" + gender + " name' = '" + $("#name").text() + "' ORDER BY year&key=" + apikey;
+            url = fusionurl + "sql=SELECT year, rank FROM " + table + " WHERE sex = '" + gender + "' AND name = '" + $("#name").text() + "' ORDER BY year&key=" + apikey;
             
             $.getJSON(url + "&callback=?", function (data) {
                 var namePopularity = data;
@@ -276,6 +276,8 @@
 <h1>What year you were born?</h1>
     <select class="year" id="birthyear" name="birthyear">
     <option value=""></option>
+    <option value="2017">2017</option>
+    <option value="2016">2016</option>
     <option value="2015">2015</option>
     <option value="2014">2014</option>
     <option value="2013">2013</option>
